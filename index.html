@@ -1,77 +1,211 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<title>Квиз – Трговинско пословање (са слањем у Google Sheets)</title>
-<style>
-body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; line-height: 1.5; }
-.container { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-h1 { text-align: center; margin-top: 0; }
-.meta { text-align: center; color: #555; margin-bottom: 20px; font-size: 0.95rem; }
-.question { margin-bottom: 18px; padding: 14px 16px; background: #fafafa; border-radius: 10px; border: 1px solid #e0e0e0; }
-textarea, input[type="text"] { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ccc; }
-button { padding: 10px 18px; border-radius: 999px; cursor: pointer; font-size: 1rem; border: none; }
-#submitBtn { background: #2563eb; color: white; }
-#resetBtn { background: #e5e7eb; margin-left: 8px; }
-#result { margin-top: 20px; padding: 14px 16px; border-radius: 10px; display: none; background: #ecfdf3; }
-.correct { border-color: #bbf7d0; }
-.incorrect { background: #fef2f2; border-color: #fecaca; }
-.note { font-size: 0.9rem; color: #555; }
-</style>
+    <meta charset="UTF-8">
+    <title>Квиз – Трговинско пословање</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background:#f5f5f5; padding:20px; }
+        .container { max-width:900px; margin:auto; background:white; padding:20px; border-radius:12px; }
+        .question { background:#fafafa; border:1px solid #ddd; padding:14px; border-radius:8px; margin-bottom:15px; }
+        .incorrect { background:#ffe6e6; border-color:#ff9999; }
+        .correct { background:#e6ffe6; border-color:#80ff80; }
+        textarea, input[type=text] { width:100%; padding:8px; border:1px solid #bbb; border-radius:6px; }
+        button { padding:10px 18px; border:none; border-radius:8px; cursor:pointer; }
+        #submitBtn { background:#2563eb; color:white; }
+        #resetBtn { background:#ccc; margin-left:8px; }
+        #result { background:#e8ffe8; border:1px solid #8fda8f; padding:12px; border-radius:8px; display:none; margin-top:16px; }
+    </style>
 </head>
 <body>
+
 <div class="container">
 <h1>Квиз – Трговинско пословање</h1>
-<div class="meta">III разред – одговори се шаљу у Google Sheets</div>
+<p>Одговори се аутоматски шаљу у Google Sheets.</p>
 
 <form id="quizForm">
-<div class="question"><p><strong>Име и презиме:</strong></p><input name="ime" required></div>
-<div class="question"><p><strong>Одељење:</strong></p><input name="odeljenje" required></div>
 
-<!-- Ради краткоће, у овом примеру ћу додати само 2 питања, али у реалној верзији иду сва -->
+<div class="question">
+    <p><strong>Име и презиме:</strong></p>
+    <input type="text" name="ime" required>
+</div>
+
+<div class="question">
+    <p><strong>Одељење:</strong></p>
+    <input type="text" name="odeljenje" required>
+</div>
+
+<!-- 1–15 обележена питања -->
 <div class="question" id="q1-box">
-<p><strong>1. Шта је промет робе?</strong></p>
-<label><input type="radio" name="q1" value="A"> Кретање робе до купца</label>
-<label><input type="radio" name="q1" value="B"> Складиштење</label>
-<label><input type="radio" name="q1" value="C"> Реклама</label>
+<p><strong>1. Шта је промет робе у трговини?</strong></p>
+<label><input type="radio" name="q1" value="A"> Кретање робе од произвођача до потрошача</label>
+<label><input type="radio" name="q1" value="B"> Складиштење робе</label>
+<label><input type="radio" name="q1" value="C"> Рекламирање робе</label>
+<label><input type="radio" name="q1" value="D"> Финансирање купаца</label>
 </div>
 
 <div class="question" id="q2-box">
-<p><strong>2. Основна функција трговине?</strong></p>
+<p><strong>2. Која је основна функција трговине?</strong></p>
 <label><input type="radio" name="q2" value="A"> Продаја робе</label>
-<label><input type="radio" name="q2" value="B"> Производња</label>
-<label><input type="radio" name="q2" value="C"> Обезбеђење</label>
+<label><input type="radio" name="q2" value="B"> Производња робе</label>
+<label><input type="radio" name="q2" value="C"> Транспорт радника</label>
+<label><input type="radio" name="q2" value="D"> Обезбеђење објекта</label>
 </div>
 
-<button type="button" id="submitBtn" onclick="submitQuiz()">Пошаљи</button>
+<div class="question" id="q3-box">
+<p><strong>3. Малопродаја подразумева продају робе:</strong></p>
+<label><input type="radio" name="q3" value="A"> Крајњим потрошачима</label>
+<label><input type="radio" name="q3" value="B"> Само предузећима</label>
+<label><input type="radio" name="q3" value="C"> Само великим трговинама</label>
+<label><input type="radio" name="q3" value="D"> Страним државама</label>
+</div>
+
+<div class="question" id="q4-box">
+<p><strong>4. Велепродаја продаје робу:</strong></p>
+<label><input type="radio" name="q4" value="A"> Директно потрошачима</label>
+<label><input type="radio" name="q4" value="B"> За личну употребу</label>
+<label><input type="radio" name="q4" value="C"> Малопродајним објектима</label>
+<label><input type="radio" name="q4" value="D"> Ученицима</label>
+</div>
+
+<div class="question" id="q5-box">
+<p><strong>5. Инвентар представља:</strong></p>
+<label><input type="radio" name="q5" value="A"> Попис робе и средстава</label>
+<label><input type="radio" name="q5" value="B"> Рекламни материјал</label>
+<label><input type="radio" name="q5" value="C"> Плакате у продавници</label>
+<label><input type="radio" name="q5" value="D"> Врсту амбалаже</label>
+</div>
+
+<div class="question" id="q6-box">
+<p><strong>6. Фактура је:</strong></p>
+<label><input type="radio" name="q6" value="A"> Рекламни документ</label>
+<label><input type="radio" name="q6" value="B"> Доказ о превозу</label>
+<label><input type="radio" name="q6" value="C"> Рачун за испоручену робу</label>
+<label><input type="radio" name="q6" value="D"> Гаранција</label>
+</div>
+
+<div class="question" id="q7-box">
+<p><strong>7. Ко обавља благајничко пословање?</strong></p>
+<label><input type="radio" name="q7" value="A"> Магационер</label>
+<label><input type="radio" name="q7" value="B"> Благајник</label>
+<label><input type="radio" name="q7" value="C"> Директор</label>
+<label><input type="radio" name="q7" value="D"> Купац</label>
+</div>
+
+<div class="question" id="q8-box">
+<p><strong>8. Набавка робе се врши:</strong></p>
+<label><input type="radio" name="q8" value="A"> Од купаца</label>
+<label><input type="radio" name="q8" value="B"> Од добављача</label>
+<label><input type="radio" name="q8" value="C"> Од државе</label>
+<label><input type="radio" name="q8" value="D"> Од радника</label>
+</div>
+
+<div class="question" id="q9-box">
+<p><strong>9. Маржа представља:</strong></p>
+<label><input type="radio" name="q9" value="A"> Трошак транспорта</label>
+<label><input type="radio" name="q9" value="B"> Разлику између продајне и набавне цене</label>
+<label><input type="radio" name="q9" value="C"> Укупан промет</label>
+<label><input type="radio" name="q9" value="D"> Порез</label>
+</div>
+
+<div class="question" id="q10-box">
+<p><strong>10. Каталог робе служи за:</strong></p>
+<label><input type="radio" name="q10" value="A"> Забаву</label>
+<label><input type="radio" name="q10" value="B"> Преглед понуде</label>
+<label><input type="radio" name="q10" value="C"> Жалбе</label>
+<label><input type="radio" name="q10" value="D"> Повраћај новца</label>
+</div>
+
+<div class="question" id="q11-box">
+<p><strong>11. Трговинска документација обухвата:</strong></p>
+<label><input type="radio" name="q11" value="A"> Рачуне, отпремнице, наруџбенице</label>
+<label><input type="radio" name="q11" value="B"> Рекламе</label>
+<label><input type="radio" name="q11" value="C"> Уговоре о раду</label>
+<label><input type="radio" name="q11" value="D"> Одлуке директора</label>
+</div>
+
+<div class="question" id="q12-box">
+<p><strong>12. Рок плаћања на фактури означава:</strong></p>
+<label><input type="radio" name="q12" value="A"> Када купац мора платити</label>
+<label><input type="radio" name="q12" value="B"> Када се роба уништава</label>
+<label><input type="radio" name="q12" value="C"> Када се мења амбалажа</label>
+<label><input type="radio" name="q12" value="D"> Када радник иде на паузу</label>
+</div>
+
+<div class="question" id="q13-box">
+<p><strong>13. Залихе робе представљају:</strong></p>
+<label><input type="radio" name="q13" value="A"> Робу на акцији</label>
+<label><input type="radio" name="q13" value="B"> Робу у складиштима</label>
+<label><input type="radio" name="q13" value="C"> Амбалажу</label>
+<label><input type="radio" name="q13" value="D"> Празне рачуне</label>
+</div>
+
+<div class="question" id="q14-box">
+<p><strong>14. Наруџбеница служи за:</strong></p>
+<label><input type="radio" name="q14" value="A"> Наручивање робе</label>
+<label><input type="radio" name="q14" value="B"> Жалбе</label>
+<label><input type="radio" name="q14" value="C"> Уређење излога</label>
+<label><input type="radio" name="q14" value="D"> Обуку радника</label>
+</div>
+
+<div class="question" id="q15-box">
+<p><strong>15. Корисничка услуга је:</strong></p>
+<label><input type="radio" name="q15" value="A"> Однос трговца према купцу</label>
+<label><input type="radio" name="q15" value="B"> Попис</label>
+<label><input type="radio" name="q15" value="C"> Уређење складишта</label>
+<label><input type="radio" name="q15" value="D"> Рачуноводство</label>
+</div>
+
+<!-- Отворена питања 16–20 -->
+<div class="question"><p><strong>16. Шта је трговина као делатност?</strong></p><textarea name="q16"></textarea></div>
+<div class="question"><p><strong>17. Основна документација у промету робе?</strong></p><textarea name="q17"></textarea></div>
+<div class="question"><p><strong>18. Улога благајника?</strong></p><textarea name="q18"></textarea></div>
+<div class="question"><p><strong>19. Шта је инвентар?</strong></p><textarea name="q19"></textarea></div>
+<div class="question"><p><strong>20. Разлика малопродаја – велепродаја?</strong></p><textarea name="q20"></textarea></div>
+
+<button type="button" id="submitBtn" onclick="submitQuiz()">Пошаљи квиз</button>
 <button type="reset" id="resetBtn">Ресетуј</button>
+
 </form>
 
 <div id="result"></div>
+
 </div>
 
 <script>
-// Уграђени твој URL
 const scriptURL = "https://script.google.com/macros/s/AKfycbyL_YGbcw4gmPBKuIqJCoqNNBdtOVrcwDK0IjtCUv1xI0eGYzGYRz72Mx3QNAEUCu4A/exec";
 
-const correctAnswers = { q1: "A", q2: "A" };
+const correctAnswers = {
+    q1:"A", q2:"A", q3:"A", q4:"C", q5:"A",
+    q6:"C", q7:"B", q8:"B", q9:"B", q10:"B",
+    q11:"A", q12:"A", q13:"B", q14:"A", q15:"A"
+};
 
 async function submitQuiz() {
+
     const form = document.getElementById("quizForm");
-    const formData = new FormData(form);
-
     let score = 0;
-    for (const key in correctAnswers) {
-        const selected = form.querySelector(`input[name="${key}"]:checked`);
-        if (selected && selected.value === correctAnswers[key]) score++;
+
+    for (let i=1;i<=15;i++){
+        const box=document.getElementById("q"+i+"-box");
+        box.classList.remove("incorrect","correct");
     }
-    formData.append("score", score);
 
-    await fetch(scriptURL, { method: "POST", body: formData });
+    for (const key in correctAnswers){
+        const sel=form.querySelector("input[name="+key+"]:checked");
+        const box=document.getElementById(key+"-box");
+        if(sel && sel.value===correctAnswers[key]){
+            score++; box.classList.add("correct");
+        } else box.classList.add("incorrect");
+    }
 
-    const result = document.getElementById("result");
-    result.style.display = "block";
-    result.innerHTML = "Одговори послати. Резултат: " + score;
+    const fd=new FormData(form);
+    fd.append("score",score);
+
+    await fetch(scriptURL,{method:"POST",body:fd});
+
+    const r=document.getElementById("result");
+    r.style.display="block";
+    r.innerHTML="Резултат: "+score+"/15 (затворена питања)<br>Одговори послати.";
 }
 </script>
 
