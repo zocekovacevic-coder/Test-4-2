@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Квиз из трговинског пословања</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f4f4f7;
+      color: #222;
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 1.8rem;
+    }
+    header p {
+      margin: 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+    label {
+      font-size: 0.95rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    select {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      min-width: 220px;
+    }
+    .question {
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #e0e0e0;
+    }
+    .question:last-child {
+      border-bottom: none;
+    }
+    .question p {
+      margin: 0 0 6px;
+      font-weight: 600;
+    }
+    .option {
+      display: block;
+      margin: 3px 0;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #eef2ff;
+      color: #3730a3;
+      margin-left: 6px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 18px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.15s;
+    }
+    button.primary {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+    }
+    button.primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    button.secondary:hover {
+      background: #d1d5db;
+      transform: translateY(-1px);
+    }
+    .result {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+      display: none;
+    }
+    .result strong {
+      font-size: 1.05rem;
+    }
+    .footer-note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .card {
+        padding: 14px 12px 16px;
+      }
+      header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Квиз из трговинског пословања</h1>
+      <p>Теме: спољна трговина, трговински биланс, режими, спољнотрговински послови, девизно пословање</p>
+    </header>
+
+    <div class="card">
+      <h2>Подаци ученика</h2>
+      <label for="studentName">Име и презиме:</label>
+      <input id="studentName" placeholder="Петар Петровић" />
+
+      <div style="margin-top:12px;">
+        <label for="levelSelect">Ниво тежине квиза:</label><br />
+        <select id="levelSelect">
+          <option value="easy">I ниво – основни</option>
+          <option value="medium">II ниво – средњи</option>
+          <option value="hard">III ниво – напредни</option>
+        </select>
+        <span class="pill" id="pillInfo">7 питања</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="secondary" type="button" onclick="renderQuiz()">
+          🔁 Учитај питања за изабрани ниво
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Питања</h2>
+      <div id="quizContainer"></div>
+      <div class="btn-row">
+        <button class="primary" type="button" onclick="submitQuiz()">
+          ✅ Пошаљи резултат
+        </button>
+        <button class="secondary" type="button" onclick="resetAnswers()">
+          🧹 Обриши одговоре
+        </button>
+      </div>
+      <div class="result" id="resultBox"></div>
+    </div>
+
+    <div class="footer-note">
+      Резултати се аутоматски шаљу у Google Sheets преко Google Apps Script-а.
+    </div>
+  </div>
+
+  <script>
+    // ТВОЈ GOOGLE APPS SCRIPT URL
+    const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbxbd1A03OP1S2FLTN7V7jWwhlAXHrOajBWv1nE-J50jqsniKnZJ4C5wtXSfytecSD59/exec";
+
+    // Питања по нивоима тежине
+    const quizData = {
+      easy: [
+        {
+          id: "q1",
+          question: "Шта је спољна трговина?",
+          options: [
+            { value: "a", text: "Трговина која се одвија само унутар граница једне земље" },
+            { value: "b", text: "Размена добара и услуга између две или више земаља" },
+            { value: "c", text: "Трговина само преко интернета" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q2",
+          question: "Шта приказује трговински биланс?",
+          options: [
+            { value: "a", text: "Однос између увоза и извоза робе" },
+            { value: "b", text: "Број регистрованих фирми" },
+            { value: "c", text: "Ниво домаће производње" }
+          ],
+          correct: "a"
+        },
+        {
+          id: "q3",
+          question: "Ко су субјекти спољнотрговинског пословања?",
+          options: [
+            { value: "a", text: "Само физичка лица" },
+            { value: "b", text: "Предузећа, банке и организације" },
+            { value: "c", text: "Само државна предузећа" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q4",
+          question: "Шта је комисион?",
+          options: [
+            { value: "a", text: "Трговина у своје име и за свој рачун" },
+            { value: "b", text: "Трговина у туђе име и за туђ рачун" },
+            { value: "c", text: "Трговина без посредника" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q5",
+          question: "Шта значи општи режим спољне трговине?",
+          options: [
+            { value: "a", text: "Потребне су посебне дозволе за сву робу" },
+            { value: "b", text: "Слободан увоз и извоз робе" },
+            { value: "c", text: "Забрањен је извоз већине производа" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q6",
+          question: "Шта су контигенти (Кк) у спољној трговини?",
+          options: [
+            { value: "a", text: "Потпуна слобода увоза" },
+            { value: "b", text: "Количинска ограничења увоза/извоза" },
+            { value: "c", text: "Врста робе која се не царини" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q7",
+          question: "На шта се односи девизно пословање?",
+          options: [
+            { value: "a", text: "Пословање искључиво у динарима" },
+            { value: "b", text: "Послове који се обављају у страним валутама" },
+            { value: "c", text: "Размену робе без плаћања" }
+          ],
+          correct: "b"
+        }
+      ],
+      medium: [
+        {
+          id: "q8",
+          question: "Који фактор највише утиче на извозни потенцијал земље?",
+          options: [
+            { value: "a", text: "Географски положај" },
+            { value: "b", text: "Структура привреде и развијеност производње" },
+            { value: "c", text: "Број становника у градовима" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q9",
+          question: "Зашто држава понекад ограничава спољну трговину?",
+          options: [
+            { value: "a", text: "Да би повећала увоз" },
+            { value: "b", text: "Ради заштите младe индустрије и домаће производње" },
+            { value: "c", text: "Да би смањила конкурентност домаћих фирми" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q10",
+          question:
+            "Шта може бити једна од последица дефицита трговинског биланса (већи увоз од извоза)?",
+          options: [
+            { value: "a", text: "Пораст запослености" },
+            { value: "b", text: "Одлив девиза из земље" },
+            { value: "c", text: "Пораст домаће производње" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q11",
+          question: "Каква је веза унутрашње и спољне трговине?",
+          options: [
+            {
+              value: "a",
+              text: "Немају никакве везе – делују одвојено"
+            },
+            {
+              value: "b",
+              text: "Развијена унутрашња трговина ствара услове за успешан извоз и увоз"
+            },
+            {
+              value: "c",
+              text: "Унутрашња трговина важи само за државне фирме"
+            }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q12",
+          question: "Која организација се најчешће бави шпедицијом у међународном промету?",
+          options: [
+            { value: "a", text: "Фирме које производе храну" },
+            { value: "b", text: "Специјализоване логистичке и шпедитивне фирме" },
+            { value: "c", text: "Само банке" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q13",
+          question: "Када се примењује режим „дозволе“ (Д) у спољној трговини?",
+          options: [
+            { value: "a", text: "Када држава жели да у потпуности либерализује трговину" },
+            { value: "b", text: "Када држава жели да контролише увоз или извоз одређене робе" },
+            { value: "c", text: "Само за пољопривредне производе" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q14",
+          question: "Који је пример везаног спољнотрговинског посла?",
+          options: [
+            {
+              value: "a",
+              text: "Фирма увози робу без икаквих услова"
+            },
+            {
+              value: "b",
+              text: "Фирма може да увози компоненте само ако извози готов производ"
+            },
+            {
+              value: "c",
+              text: "Фирма продаје робу искључиво на домаћем тржишту"
+            }
+          ],
+          correct: "b"
+        }
+      ],
+      hard: [
+        {
+          id: "q15",
+          question:
+            "Компанија А бележи раст извоза, али и даље има негативан трговински биланс. Шта може бити разлог?",
+          options: [
+            { value: "a", text: "Увоз расте брже од извоза" },
+            { value: "b", text: "Нема увоза" },
+            { value: "c", text: "Смањује се обим спољне трговине" }
+          ],
+          correct: "a"
+        },
+        {
+          id: "q16",
+          question:
+            "Земља уводи контигенат (Кк) за увоз шећера. Каква је вероватна последица на домаће произвођаче шећера?",
+          options: [
+            { value: "a", text: "Ослабиће њихов положај" },
+            { value: "b", text: "Повећаће се заштита и њихова конкурентност" },
+            { value: "c", text: "Неће бити никаквих промена" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q17",
+          question:
+            "Купац из Немачке тражи плаћање у еврима. У ком делу пословања се овај поступак евидентира?",
+          options: [
+            { value: "a", text: "У девизном пословању" },
+            { value: "b", text: "У пословима унутрашње трговине" },
+            { value: "c", text: "У немонетарним пословима" }
+          ],
+          correct: "a"
+        },
+        {
+          id: "q18",
+          question:
+            "Предузеће жели да уђе на ново инострано тржиште, али нема довољно капитала за директан извоз. Који облик спољнотрговинског посла је најприкладнији?",
+          options: [
+            { value: "a", text: "Потпуно одустајање од извоза" },
+            { value: "b", text: "Комисион – трговина у туђе име и за туђ рачун" },
+            { value: "c", text: "Само продаја на домаћем тржишту" }
+          ],
+          correct: "b"
+        },
+        {
+          id: "q19",
+          question:
+            "Фирма из Србије извози робу, али током транспорта долази до оштећења пошиљке. Која организација је била задужена за правилно руковање робом?",
+          options: [
+            { value: "a", text: "Шпедитер / транспортна организација" },
+            { value: "b", text: "Локална продавница" },
+            { value: "c", text: "Министарство просвете" }
+          ],
+          correct: "a"
+        },
+        {
+          id: "q20",
+          question:
+            "Зашто је за фирму која послује са иностранством важно да поштује принципе спољнотрговинског пословања (чување угледа, тајности, сигурност посла)?",
+          options: [
+            { value: "a", text: "Да би лакше губила пословне партнере" },
+            {
+              value: "b",
+              text: "Зато што кршење принципа може довести до губитка поверења, партнера и пословних губитака"
+            },
+            { value: "c", text: "Није важно, принципи су само формалност" }
+          ],
+          correct: "b"
+        }
+      ]
+    };
+
+    function getCurrentLevelKey() {
+      const select = document.getElementById("levelSelect");
+      return select.value || "easy";
+    }
+
+    function renderQuiz() {
+      const levelKey = getCurrentLevelKey();
+      const container = document.getElementById("quizContainer");
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "none";
+      resultBox.textContent = "";
+
+      const questions = quizData[levelKey] || [];
+      const pillInfo = document.getElementById("pillInfo");
+      pillInfo.textContent =
+        questions.length + (levelKey === "easy"
+          ? " питања"
+          : levelKey === "medium"
+          ? " питања"
+          : " питања");
+
+      if (!questions.length) {
+        container.innerHTML = "<p>Нема дефинисаних питања за овај ниво.</p>";
+        return;
+      }
+
+      // Генерисање HTML за питања
+      let html = "";
+      questions.forEach((q, index) => {
+        html += `<div class="question">
+          <p>${index + 1}. ${q.question}</p>`;
+        q.options.forEach(opt => {
+          const inputId = `${q.id}_${opt.value}`;
+          html += `
+            <label class="option" for="${inputId}">
+              <input type="radio" id="${inputId}" name="${q.id}" value="${opt.value}" />
+              ${opt.value}) ${opt.text}
+            </label>
+          `;
+        });
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function resetAnswers() {
+      const inputs = document.querySelectorAll('#quizContainer input[type="radio"]');
+      inputs.forEach(i => (i.checked = false));
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "none";
+      resultBox.textContent = "";
+    }
+
+    function submitQuiz() {
+      const name = document.getElementById("studentName").value.trim();
+      if (!name) {
+        alert("Унеси име и презиме.");
+        return;
+      }
+
+      const levelKey = getCurrentLevelKey();
+      const questions = quizData[levelKey] || [];
+      if (!questions.length) {
+        alert("Нема питања за изабрани ниво.");
+        return;
+      }
+
+      const answers = {};
+      let score = 0;
+      for (const q of questions) {
+        const checked = document.querySelector(`input[name="${q.id}"]:checked`);
+        if (!checked) {
+          alert("Одговори на сва питања пре слања.");
+          return;
+        }
+        answers[q.id] = checked.value;
+        if (checked.value === q.correct) score++;
+      }
+
+      const maxScore = questions.length;
+      const resultBox = document.getElementById("resultBox");
+      resultBox.style.display = "block";
+      resultBox.innerHTML =
+        `<strong>${name}</strong>, освојио/ла си <strong>${score}/${maxScore}</strong> поена `
+        + `(ниво: ${levelKey === "easy" ? "I – основни" : levelKey === "medium" ? "II – средњи" : "III – напредни"}).`
+        + "<br/>Резултат је послат у таблицу.";
+
+      // Слање података у Google Sheets преко Apps Script-а
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          level: levelKey,
+          score: score,
+          maxScore: maxScore,
+          answers: answers
+        })
+      });
+    }
+
+    // Аутоматски учитај питања за I ниво при учитавању странице
+    window.addEventListener("DOMContentLoaded", renderQuiz);
+  </script>
+</body>
+</html>
